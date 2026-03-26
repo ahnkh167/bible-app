@@ -13,7 +13,7 @@ function App() {
   const [currentBook, setCurrentBook] = useState('gen')
   const [currentChapter, setCurrentChapter] = useState(1)
   const [view, setView] = useState('read') // 'read' | 'books' | 'search'
-  const [fontSize, setFontSize] = useState(18)
+  const [fontSize, setFontSize] = useState(22)
   const [showEnglish, setShowEnglish] = useState(true)
   const [presentationMode, setPresentationMode] = useState(false)
   const [presentationVerse, setPresentationVerse] = useState(1)
@@ -185,8 +185,8 @@ function App() {
               >
                 ▶
               </button>
-              <button className="header-btn font-btn" onClick={() => setFontSize(prev => Math.max(14, prev - 2))}>A-</button>
-              <button className="header-btn font-btn" onClick={() => setFontSize(prev => Math.min(28, prev + 2))}>A+</button>
+              <button className="header-btn font-btn" onClick={() => setFontSize(prev => Math.max(16, prev - 2))}>A-</button>
+              <button className="header-btn font-btn" onClick={() => setFontSize(prev => Math.min(36, prev + 2))}>A+</button>
             </>
           )}
           <button
