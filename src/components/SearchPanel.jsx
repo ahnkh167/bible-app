@@ -1,18 +1,91 @@
-import { useState, useCallback, useRef } from 'react'
-import { books, getBook } from '../data/bibleMeta'
+import { useState, useCallback, useRef, useMemo } from 'react'
+import { books, getBook, getBookByName } from '../data/bibleMeta'
 import './SearchPanel.css'
 
-function SearchPanel({ bibleData, onNavigate }) {
+// 구절 참조 파싱: "민수기 3장 4절", "민 3:4", "창 1:1-5", "요한복음 3장 16절" 등
+function parseVerseReference(query) {
+  const q = query.trim()
+
+  // 패턴들:
+  // 1) "민수기 3장 4절" or "민수기 3장 4-10절"
+  // 2) "민수기 3:4" or "민수기 3:4-10"
+  // 3) "민 3장 4절" or "민 3:4"
+  // 4) "Genesis 3:4" or "Gen 3:4-10"
+
+  // 한글 패턴: 책이름 + 장 + 절(범위)
+  const koPattern = /^(.+?)\s*(\d+)\s*[장:]\s*(\d+)\s*(?:[-~]\s*(\d+))?\s*[절]?\s*$/
+  // 영어 패턴
+  const enPattern = /^(.+?)\s+(\d+)\s*:\s*(\d+)\s*(?:[-~]\s*(\d+))?\s*$/
+  // 장만: "창세기 3장"
+  const chapterOnlyPattern = /^(.+?)\s*(\d+)\s*장?\s*$/
+
+  let match = q.match(koPattern) || q.match(enPattern)
+  if (match) {
+    const bookName = match[1].trim()
+    const chapter = parseInt(match[2])
+    const verseStart = parseInt(match[3])
+    const verseEnd = match[4] ? parseInt(match[4]) : verseStart
+
+    const book = findBook(bookName)
+    if (book) {
+      return { book, chapter, verseStart, verseEnd, type: 'verse' }
+    }
+  }
+
+  // 장만 검색
+  match = q.match(chapterOnlyPattern)
+  if (match) {
+    const bookName = match[1].trim()
+    const chapter = parseInt(match[2])
+    const book = findBook(bookName)
+    if (book) {
+      return { book, chapter, verseStart: null, verseEnd: null, type: 'chapter' }
+    }
+  }
+
+  return null
+}
+
+function findBook(name) {
+  const n = name.toLowerCase().replace(/\s+/g, '')
+
+  // 정확한 이름/축약 매칭
+  let found = books.find(b =>
+    b.name === name || b.shortName === name ||
+    b.nameEn.toLowerCase() === n ||
+    b.name.replace(/\s+/g, '') === n
+  )
+  if (found) return found
+
+  // 부분 매칭 (시작 부분)
+  found = books.find(b =>
+    b.name.startsWith(name) ||
+    b.nameEn.toLowerCase().startsWith(n) ||
+    b.shortName === name
+  )
+  if (found) return found
+
+  // 포함 매칭
+  found = books.find(b =>
+    b.name.includes(name) ||
+    b.nameEn.toLowerCase().includes(n)
+  )
+  return found || null
+}
+
+function SearchPanel({ bibleData, bibleDataEn, onNavigate, onShowVerses }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
+  const [verseResults, setVerseResults] = useState(null) // 구절 참조 검색 결과
   const [searching, setSearching] = useState(false)
   const [searched, setSearched] = useState(false)
   const inputRef = useRef(null)
   const searchTimeoutRef = useRef(null)
 
   const performSearch = useCallback((searchQuery) => {
-    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+    if (!searchQuery.trim() || searchQuery.trim().length < 1) {
       setResults([])
+      setVerseResults(null)
       setSearched(false)
       return
     }
@@ -20,8 +93,79 @@ function SearchPanel({ bibleData, onNavigate }) {
     setSearching(true)
     setSearched(true)
 
-    // 비동기로 검색하여 UI 블로킹 방지
     setTimeout(() => {
+      // 1. 구절 참조 검색 시도
+      const ref = parseVerseReference(searchQuery)
+      if (ref) {
+        const bookData = bibleData[ref.book.id]
+        const bookDataEn = bibleDataEn?.[ref.book.id]
+
+        if (ref.type === 'chapter' && bookData?.[ref.chapter]) {
+          // 장 전체 표시
+          const verses = []
+          const chapterData = bookData[ref.chapter]
+          const chapterDataEn = bookDataEn?.[ref.chapter]
+          for (const [vNum, text] of Object.entries(chapterData)) {
+            verses.push({
+              verse: parseInt(vNum),
+              textKo: text,
+              textEn: chapterDataEn?.[vNum] || ''
+            })
+          }
+          verses.sort((a, b) => a.verse - b.verse)
+
+          setVerseResults({
+            book: ref.book,
+            chapter: ref.chapter,
+            verses,
+            label: `${ref.book.name} ${ref.chapter}장`
+          })
+          setResults([])
+          setSearching(false)
+          return
+        }
+
+        if (ref.type === 'verse' && bookData?.[ref.chapter]) {
+          // 특정 절/범위 표시
+          const verses = []
+          const chapterData = bookData[ref.chapter]
+          const chapterDataEn = bookDataEn?.[ref.chapter]
+          for (let v = ref.verseStart; v <= ref.verseEnd; v++) {
+            if (chapterData[v]) {
+              verses.push({
+                verse: v,
+                textKo: chapterData[v],
+                textEn: chapterDataEn?.[v] || ''
+              })
+            }
+          }
+
+          if (verses.length > 0) {
+            const label = ref.verseStart === ref.verseEnd
+              ? `${ref.book.name} ${ref.chapter}장 ${ref.verseStart}절`
+              : `${ref.book.name} ${ref.chapter}장 ${ref.verseStart}-${ref.verseEnd}절`
+
+            setVerseResults({
+              book: ref.book,
+              chapter: ref.chapter,
+              verses,
+              label
+            })
+            setResults([])
+            setSearching(false)
+            return
+          }
+        }
+      }
+
+      // 2. 키워드 검색 (기존)
+      setVerseResults(null)
+      if (searchQuery.trim().length < 2) {
+        setResults([])
+        setSearching(false)
+        return
+      }
+
       const found = []
       const q = searchQuery.trim().toLowerCase()
       const maxResults = 100
@@ -43,7 +187,6 @@ function SearchPanel({ bibleData, onNavigate }) {
                 chapter: parseInt(chapterNum),
                 verse: parseInt(verseNum),
                 text,
-                // 하이라이트 위치
                 matchIndex: text.toLowerCase().indexOf(q),
                 matchLength: q.length
               })
@@ -55,7 +198,7 @@ function SearchPanel({ bibleData, onNavigate }) {
       setResults(found)
       setSearching(false)
     }, 10)
-  }, [bibleData])
+  }, [bibleData, bibleDataEn])
 
   const handleInputChange = (e) => {
     const value = e.target.value
@@ -99,13 +242,13 @@ function SearchPanel({ bibleData, onNavigate }) {
             ref={inputRef}
             type="text"
             className="search-input"
-            placeholder="성경 구절 검색..."
+            placeholder="구절 검색 (예: 창세기 1장 1절, 요 3:16, 사랑)"
             value={query}
             onChange={handleInputChange}
             autoFocus
           />
           {query && (
-            <button type="button" className="search-clear" onClick={() => { setQuery(''); setResults([]); setSearched(false); inputRef.current?.focus(); }}>
+            <button type="button" className="search-clear" onClick={() => { setQuery(''); setResults([]); setVerseResults(null); setSearched(false); inputRef.current?.focus(); }}>
               ✕
             </button>
           )}
@@ -116,7 +259,35 @@ function SearchPanel({ bibleData, onNavigate }) {
         <div className="search-status">검색 중...</div>
       )}
 
-      {searched && !searching && (
+      {/* 구절 참조 검색 결과 */}
+      {verseResults && (
+        <div className="verse-ref-results">
+          <div className="verse-ref-header">
+            <h3>{verseResults.label}</h3>
+            <span className="verse-ref-en">{verseResults.book.nameEn} {verseResults.chapter}</span>
+            <button
+              className="verse-ref-goto"
+              onClick={() => onNavigate(verseResults.book.id, verseResults.chapter)}
+            >
+              해당 장으로 이동 →
+            </button>
+          </div>
+          <div className="verse-ref-list">
+            {verseResults.verses.map(v => (
+              <div key={v.verse} className="verse-ref-item">
+                <span className="verse-ref-num">{v.verse}</span>
+                <div className="verse-ref-content">
+                  <div className="verse-ref-ko">{v.textKo}</div>
+                  {v.textEn && <div className="verse-ref-en-text">{v.textEn}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 키워드 검색 결과 */}
+      {searched && !searching && !verseResults && (
         <div className="search-status">
           {results.length > 0 ? `${results.length}개 결과${results.length >= 100 ? ' (최대 100개)' : ''}` : '검색 결과가 없습니다'}
         </div>
@@ -141,9 +312,21 @@ function SearchPanel({ bibleData, onNavigate }) {
 
       {!searched && (
         <div className="search-suggestions">
-          <p className="suggestion-title">추천 검색어</p>
+          <p className="suggestion-title">검색 예시</p>
           <div className="suggestion-chips">
-            {['사랑', '믿음', '소망', '은혜', '평안', '기도', '감사', '축복'].map(word => (
+            {['창세기 1장 1절', '시편 23장', '요 3:16', '롬 8:28-30'].map(word => (
+              <button
+                key={word}
+                className="suggestion-chip"
+                onClick={() => { setQuery(word); performSearch(word); }}
+              >
+                {word}
+              </button>
+            ))}
+          </div>
+          <p className="suggestion-title" style={{ marginTop: 24 }}>키워드 검색</p>
+          <div className="suggestion-chips">
+            {['사랑', '믿음', '소망', '은혜', '평안', '기도'].map(word => (
               <button
                 key={word}
                 className="suggestion-chip"

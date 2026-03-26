@@ -17,7 +17,11 @@
       "Bash(node scripts/downloadBible.js)",
       "Bash(du -sh \"/Users/benahn/Downloads/Bible - App/src/data/bible/\"*.json)",
       "Bash(gh auth:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(gh repo:*)",
+      "Bash(gh api:*)",
+      "Bash(gh run:*)",
+      "Bash(node -e \":*)"
     ]
   }
 }

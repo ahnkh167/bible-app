@@ -37,6 +37,7 @@
 }
 .search-input::placeholder {
   color: var(--text-secondary);
+  font-size: 14px;
 }
 .search-clear {
   font-size: 16px;
@@ -58,7 +59,83 @@
   margin-bottom: 8px;
 }
 
-/* Results */
+/* 구절 참조 검색 결과 */
+.verse-ref-results {
+  animation: fadeIn 0.3s ease;
+}
+.verse-ref-header {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.verse-ref-header h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.verse-ref-header .verse-ref-en {
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 12px;
+}
+.verse-ref-goto {
+  font-size: 14px;
+  color: var(--accent);
+  padding: 8px 16px;
+  background: var(--accent-bg);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.verse-ref-goto:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.verse-ref-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.verse-ref-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+.verse-ref-num {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  min-width: 2em;
+  text-align: right;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.verse-ref-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.verse-ref-ko {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-verse);
+  word-break: keep-all;
+}
+.verse-ref-en-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* 키워드 검색 결과 */
 .search-results {
   display: flex;
   flex-direction: column;
@@ -106,7 +183,7 @@
 .suggestion-title {
   font-size: 14px;
   color: var(--text-secondary);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .suggestion-chips {
   display: flex;

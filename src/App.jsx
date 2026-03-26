@@ -224,6 +224,7 @@ function App() {
         {view === 'search' && bibleData && (
           <SearchPanel
             bibleData={bibleData}
+            bibleDataEn={bibleDataEn}
             onNavigate={(bookId, chapter) => navigateToBook(bookId, chapter)}
           />
         )}
