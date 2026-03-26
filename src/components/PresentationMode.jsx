@@ -28,21 +28,25 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
   const koText = curVersesKo[verse] || ''
   const enText = curVersesEn[verse] || ''
 
-  // 텍스트 길이에 따라 글자 크기 자동 계산
+  // 텍스트 길이에 따라 글자 크기 자동 계산 - 최대한 크게
   const fontSizes = useMemo(() => {
-    const totalLen = koText.length + (showEnglish ? enText.length : 0)
+    const koLen = koText.length
+    const enLen = showEnglish ? enText.length : 0
     let koSize, enSize
-    if (totalLen <= 30) {
+    if (koLen <= 20) {
       koSize = 'pres-text-xl'
       enSize = 'pres-text-lg'
-    } else if (totalLen <= 60) {
+    } else if (koLen <= 40) {
       koSize = 'pres-text-lg'
       enSize = 'pres-text-md'
-    } else if (totalLen <= 120) {
+    } else if (koLen <= 80) {
       koSize = 'pres-text-md'
       enSize = 'pres-text-sm'
-    } else {
+    } else if (koLen <= 150) {
       koSize = 'pres-text-sm'
+      enSize = 'pres-text-xs'
+    } else {
+      koSize = 'pres-text-xs'
       enSize = 'pres-text-xs'
     }
     return { koSize, enSize }

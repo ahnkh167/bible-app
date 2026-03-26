@@ -231,6 +231,13 @@ function App() {
             bibleData={bibleData}
             bibleDataEn={bibleDataEn}
             onNavigate={(bookId, chapter) => navigateToBook(bookId, chapter)}
+            onPresent={(bookId, chapter, verse) => {
+              setCurrentBook(bookId)
+              setCurrentChapter(chapter)
+              setView('read')
+              setPresentationVerse(verse || 1)
+              setPresentationMode(true)
+            }}
           />
         )}
       </main>

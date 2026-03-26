@@ -63,7 +63,7 @@ function parseVerseReference(query) {
   return null
 }
 
-function SearchPanel({ bibleData, bibleDataEn, onNavigate }) {
+function SearchPanel({ bibleData, bibleDataEn, onNavigate, onPresent }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [verseResults, setVerseResults] = useState(null)
@@ -297,19 +297,27 @@ function SearchPanel({ bibleData, bibleDataEn, onNavigate }) {
           <div className="verse-ref-header">
             <h3>{verseResults.label}</h3>
             <span className="verse-ref-en">{verseResults.book.nameEn} {verseResults.chapter}</span>
-            <button className="verse-ref-goto" onClick={() => onNavigate(verseResults.book.id, verseResults.chapter)}>
-              해당 장으로 이동 →
-            </button>
+            <div className="verse-ref-actions">
+              <button className="verse-ref-goto" onClick={() => onNavigate(verseResults.book.id, verseResults.chapter)}>
+                해당 장으로 이동 →
+              </button>
+              {onPresent && (
+                <button className="verse-ref-present" onClick={() => onPresent(verseResults.book.id, verseResults.chapter, verseResults.verses[0]?.verse || 1)}>
+                  ▶ 프레젠테이션
+                </button>
+              )}
+            </div>
           </div>
           <div className="verse-ref-list">
             {verseResults.verses.map(v => (
-              <div key={v.verse} className="verse-ref-item">
+              <button key={v.verse} className="verse-ref-item" onClick={() => onPresent?.(verseResults.book.id, verseResults.chapter, v.verse)}>
                 <span className="verse-ref-num">{v.verse}</span>
                 <div className="verse-ref-content">
                   <div className="verse-ref-ko">{v.textKo}</div>
                   {v.textEn && <div className="verse-ref-en-text">{v.textEn}</div>}
                 </div>
-              </div>
+                <span className="verse-ref-play">▶</span>
+              </button>
             ))}
           </div>
         </div>

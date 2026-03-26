@@ -26,14 +26,14 @@
   color: #d4a574;
 }
 
-/* Content - 화면 최대한 활용 */
+/* Content - 화면 전체 활용 */
 .presentation-content {
   position: relative;
   z-index: 1;
-  max-width: 92vw;
-  width: 100%;
+  width: 94vw;
+  height: 85vh;
   text-align: center;
-  padding: 24px 40px;
+  padding: 20px 3vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,13 +51,13 @@
   transition: opacity 0.2s;
 }
 
-/* 구절 참조 */
+/* 구절 참조 - 상단 */
 .presentation-ref {
-  font-size: 20px;
+  font-size: 24px;
   color: #e8c090;
   font-weight: 600;
   letter-spacing: 3px;
-  margin-bottom: 32px;
+  margin-bottom: 4vh;
   text-shadow: 0 0 30px rgba(232, 192, 144, 0.15);
 }
 .presentation-ref-en {
@@ -65,43 +65,42 @@
   opacity: 0.7;
 }
 
-/* 한국어 구절 - 밝고 선명한 흰색 */
+/* 한국어 구절 - 크고 밝은 흰색 */
 .presentation-verse-ko {
-  font-weight: 500;
-  line-height: 1.6;
+  font-weight: 600;
+  line-height: 1.5;
   color: #ffffff;
   word-break: keep-all;
-  margin-bottom: 28px;
+  margin-bottom: 3vh;
   text-shadow: 0 2px 20px rgba(255, 255, 255, 0.08);
-  max-width: 90vw;
+  width: 90vw;
 }
 
 /* 영어 구절 - 밝은 금색 */
 .presentation-verse-en {
   font-weight: 400;
-  line-height: 1.55;
-  color: #e0c898;
+  line-height: 1.45;
+  color: #e8d0a8;
   font-style: italic;
-  margin-bottom: 20px;
-  max-width: 88vw;
+  width: 88vw;
   text-shadow: 0 2px 15px rgba(224, 200, 152, 0.08);
 }
 
-/* 텍스트 크기 클래스 - 최대한 크게 */
+/* 텍스트 크기 - 화면을 꽉 채우도록 매우 크게 */
 .pres-text-xl {
-  font-size: clamp(48px, 7vw, 80px);
+  font-size: clamp(56px, 9vw, 110px);
 }
 .pres-text-lg {
-  font-size: clamp(36px, 5.5vw, 64px);
+  font-size: clamp(44px, 7vw, 85px);
 }
 .pres-text-md {
-  font-size: clamp(28px, 4vw, 48px);
+  font-size: clamp(34px, 5.5vw, 64px);
 }
 .pres-text-sm {
-  font-size: clamp(22px, 3vw, 36px);
+  font-size: clamp(26px, 4vw, 50px);
 }
 .pres-text-xs {
-  font-size: clamp(18px, 2.5vw, 30px);
+  font-size: clamp(20px, 3vw, 40px);
 }
 
 /* Controls */
@@ -178,15 +177,16 @@
 @media (max-width: 768px) {
   .presentation-content {
     padding: 16px 20px;
+    height: 80vh;
   }
   .presentation-ref {
-    font-size: 16px;
-    margin-bottom: 24px;
+    font-size: 18px;
+    margin-bottom: 3vh;
   }
-  .pres-text-xl { font-size: clamp(36px, 8vw, 56px); }
-  .pres-text-lg { font-size: clamp(28px, 7vw, 44px); }
-  .pres-text-md { font-size: clamp(24px, 5.5vw, 36px); }
-  .pres-text-sm { font-size: clamp(20px, 4.5vw, 28px); }
-  .pres-text-xs { font-size: clamp(16px, 4vw, 24px); }
+  .pres-text-xl { font-size: clamp(40px, 10vw, 70px); }
+  .pres-text-lg { font-size: clamp(32px, 8vw, 56px); }
+  .pres-text-md { font-size: clamp(26px, 7vw, 44px); }
+  .pres-text-sm { font-size: clamp(22px, 5.5vw, 36px); }
+  .pres-text-xs { font-size: clamp(18px, 5vw, 30px); }
   .presentation-cross { font-size: 250px; }
 }

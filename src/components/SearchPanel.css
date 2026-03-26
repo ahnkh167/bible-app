@@ -160,6 +160,11 @@
   display: block;
   margin-bottom: 12px;
 }
+.verse-ref-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
 .verse-ref-goto {
   font-size: 14px;
   color: var(--accent);
@@ -171,6 +176,18 @@
 .verse-ref-goto:hover {
   background: var(--accent);
   color: white;
+}
+.verse-ref-present {
+  font-size: 14px;
+  color: #fff;
+  padding: 8px 16px;
+  background: var(--accent);
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.verse-ref-present:hover {
+  background: #c4905a;
 }
 
 .verse-ref-list {
@@ -186,6 +203,23 @@
   border-radius: 10px;
   background: var(--bg-card);
   border: 1px solid var(--border);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.verse-ref-item:hover {
+  border-color: var(--accent);
+}
+.verse-ref-play {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-size: 14px;
+  opacity: 0.3;
+  align-self: center;
+  transition: opacity 0.2s;
+}
+.verse-ref-item:hover .verse-ref-play {
+  opacity: 1;
 }
 .verse-ref-num {
   font-size: 13px;
