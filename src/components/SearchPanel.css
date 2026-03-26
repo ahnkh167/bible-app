@@ -1,0 +1,129 @@
+.search-panel {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+.search-form {
+  margin-bottom: 16px;
+}
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0 16px;
+  transition: border-color 0.2s;
+}
+.search-input-wrap:focus-within {
+  border-color: var(--accent);
+}
+.search-icon {
+  font-size: 18px;
+  margin-right: 8px;
+  opacity: 0.5;
+}
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 16px;
+  color: var(--text);
+  padding: 14px 0;
+  font-family: var(--font);
+}
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+.search-clear {
+  font-size: 16px;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: 50%;
+}
+.search-clear:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* Status */
+.search-status {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+/* Results */
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.search-result {
+  text-align: left;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.15s;
+}
+.search-result:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.result-ref {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.result-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.result-text mark {
+  background: rgba(212, 165, 116, 0.3);
+  color: var(--text);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+
+/* Suggestions */
+.search-suggestions {
+  text-align: center;
+  padding: 40px 0;
+}
+.suggestion-title {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.suggestion-chip {
+  padding: 8px 18px;
+  font-size: 14px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-radius: 20px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.suggestion-chip:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}

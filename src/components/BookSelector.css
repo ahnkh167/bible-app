@@ -1,0 +1,168 @@
+.book-selector {
+  padding: 0 0 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  padding: 12px 16px;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* Books Grid */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  padding: 8px 16px;
+}
+.book-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  gap: 4px;
+}
+.book-item:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+.book-item.current {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.book-short {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.book-name {
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.book-chapters {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Chapter Selector */
+.chapter-selector {
+  padding: 0 16px;
+  animation: fadeIn 0.2s ease;
+}
+.chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+.chapter-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+}
+.back-btn {
+  font-size: 15px;
+  color: var(--accent);
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--accent-bg);
+}
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 8px;
+}
+.chapter-item {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.chapter-item:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+/* Bookmarks */
+.bookmarks-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bookmark-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: left;
+  transition: all 0.2s;
+}
+.bookmark-item:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.bookmark-icon {
+  font-size: 20px;
+}
+.bookmark-text {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+.empty-state p:first-child {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.empty-hint {
+  font-size: 13px;
+  opacity: 0.7;
+}
