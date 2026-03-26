@@ -46,6 +46,11 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+.presentation.pres-transitioning .presentation-content {
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
 /* 구절 참조 */
 .presentation-ref {
   font-size: 20px;

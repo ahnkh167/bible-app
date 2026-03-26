@@ -6,7 +6,7 @@
 }
 
 .search-form {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 .search-input-wrap {
   display: flex;
@@ -48,6 +48,86 @@
 .search-clear:hover {
   background: var(--accent-bg);
   color: var(--accent);
+}
+
+/* 자동완성 */
+.autocomplete-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  animation: fadeIn 0.2s ease;
+}
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+.autocomplete-item:hover {
+  background: var(--accent-bg);
+}
+.ac-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+.ac-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* 장 선택 그리드 */
+.chapter-grid-wrap {
+  margin-bottom: 16px;
+  animation: fadeIn 0.2s ease;
+}
+.chapter-grid-header {
+  margin-bottom: 12px;
+}
+.chapter-grid-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cg-en {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.cg-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 6px;
+}
+.chapter-grid-btn {
+  padding: 12px 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.chapter-grid-btn:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
 }
 
 /* Status */

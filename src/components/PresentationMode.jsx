@@ -1,39 +1,113 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { books } from '../data/bibleMeta'
 import './PresentationMode.css'
 
-function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onClose, showEnglish }) {
+function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onClose, showEnglish, bibleData, bibleDataEn }) {
+  const [currentBookId, setCurrentBookId] = useState(book.id)
+  const [currentChapter, setCurrentChapter] = useState(chapter)
   const [verse, setVerse] = useState(currentVerse)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showControls, setShowControls] = useState(true)
+  const [transitioning, setTransitioning] = useState(false)
 
-  const verseKeys = Object.keys(versesKo).map(Number).sort((a, b) => a - b)
+  // 현재 책/장의 데이터
+  const currentBook = useMemo(() => books.find(b => b.id === currentBookId) || book, [currentBookId, book])
+  const curVersesKo = useMemo(() => {
+    if (currentBookId === book.id && currentChapter === chapter) return versesKo
+    return bibleData?.[currentBookId]?.[currentChapter] || {}
+  }, [currentBookId, currentChapter, bibleData, book.id, chapter, versesKo])
+  const curVersesEn = useMemo(() => {
+    if (currentBookId === book.id && currentChapter === chapter) return versesEn
+    return bibleDataEn?.[currentBookId]?.[currentChapter] || {}
+  }, [currentBookId, currentChapter, bibleDataEn, book.id, chapter, versesEn])
+
+  const verseKeys = Object.keys(curVersesKo).map(Number).sort((a, b) => a - b)
   const totalVerses = verseKeys.length
   const currentIndex = verseKeys.indexOf(verse)
 
-  const koText = versesKo[verse] || ''
-  const enText = versesEn[verse] || ''
+  const koText = curVersesKo[verse] || ''
+  const enText = curVersesEn[verse] || ''
 
   // 텍스트 길이에 따라 글자 크기 자동 계산
   const fontSizes = useMemo(() => {
     const totalLen = koText.length + (showEnglish ? enText.length : 0)
-
     let koSize, enSize
     if (totalLen <= 30) {
-      koSize = 'pres-text-xl'    // 매우 큰 글씨
+      koSize = 'pres-text-xl'
       enSize = 'pres-text-lg'
     } else if (totalLen <= 60) {
-      koSize = 'pres-text-lg'    // 큰 글씨
+      koSize = 'pres-text-lg'
       enSize = 'pres-text-md'
     } else if (totalLen <= 120) {
-      koSize = 'pres-text-md'    // 중간
+      koSize = 'pres-text-md'
       enSize = 'pres-text-sm'
     } else {
-      koSize = 'pres-text-sm'    // 긴 구절
+      koSize = 'pres-text-sm'
       enSize = 'pres-text-xs'
     }
-
     return { koSize, enSize }
   }, [koText, enText, showEnglish])
+
+  // 다음 장으로 이동
+  const goNextChapter = useCallback(() => {
+    const bookIdx = books.findIndex(b => b.id === currentBookId)
+    if (currentChapter < currentBook.chapters) {
+      // 같은 책의 다음 장
+      setTransitioning(true)
+      setTimeout(() => {
+        setCurrentChapter(prev => prev + 1)
+        setVerse(1)
+        setTransitioning(false)
+      }, 200)
+      return true
+    } else if (bookIdx < books.length - 1) {
+      // 다음 책의 1장
+      const nextBook = books[bookIdx + 1]
+      setTransitioning(true)
+      setTimeout(() => {
+        setCurrentBookId(nextBook.id)
+        setCurrentChapter(1)
+        setVerse(1)
+        setTransitioning(false)
+      }, 200)
+      return true
+    }
+    return false
+  }, [currentBookId, currentChapter, currentBook])
+
+  // 이전 장으로 이동
+  const goPrevChapter = useCallback(() => {
+    const bookIdx = books.findIndex(b => b.id === currentBookId)
+    if (currentChapter > 1) {
+      // 같은 책의 이전 장
+      setTransitioning(true)
+      setTimeout(() => {
+        setCurrentChapter(prev => prev - 1)
+        setVerse(-1) // 마지막 절로 세팅 (아래에서 처리)
+        setTransitioning(false)
+      }, 200)
+      return true
+    } else if (bookIdx > 0) {
+      // 이전 책의 마지막 장
+      const prevBook = books[bookIdx - 1]
+      setTransitioning(true)
+      setTimeout(() => {
+        setCurrentBookId(prevBook.id)
+        setCurrentChapter(prevBook.chapters)
+        setVerse(-1) // 마지막 절로
+        setTransitioning(false)
+      }, 200)
+      return true
+    }
+    return false
+  }, [currentBookId, currentChapter])
+
+  // verse가 -1이면 마지막 절로 세팅
+  useEffect(() => {
+    if (verse === -1 && verseKeys.length > 0) {
+      setVerse(verseKeys[verseKeys.length - 1])
+    }
+  }, [verse, verseKeys])
 
   useEffect(() => {
     const enterFullscreen = async () => {
@@ -60,7 +134,7 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
 
   useEffect(() => {
     if (!showControls) return
-    const timer = setTimeout(() => setShowControls(false), 3000)
+    const timer = setTimeout(() => setShowControls(false), 4000)
     return () => clearTimeout(timer)
   }, [showControls, verse])
 
@@ -68,15 +142,23 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     if (currentIndex < totalVerses - 1) {
       setVerse(verseKeys[currentIndex + 1])
       setShowControls(true)
+    } else {
+      // 마지막 절 → 다음 장
+      goNextChapter()
+      setShowControls(true)
     }
-  }, [currentIndex, totalVerses, verseKeys])
+  }, [currentIndex, totalVerses, verseKeys, goNextChapter])
 
   const goPrev = useCallback(() => {
     if (currentIndex > 0) {
       setVerse(verseKeys[currentIndex - 1])
       setShowControls(true)
+    } else {
+      // 첫 절 → 이전 장 마지막 절
+      goPrevChapter()
+      setShowControls(true)
     }
-  }, [currentIndex, verseKeys])
+  }, [currentIndex, verseKeys, goPrevChapter])
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -114,24 +196,28 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     }
   }
 
+  // 현재 위치 표시 텍스트
+  const locationLabel = `${currentBook.name} ${currentChapter}장`
+  const locationLabelEn = `${currentBook.nameEn} ${currentChapter}`
+
   return (
-    <div className="presentation" onClick={handleClick} onMouseMove={() => setShowControls(true)}>
+    <div className={`presentation ${transitioning ? 'pres-transitioning' : ''}`} onClick={handleClick} onMouseMove={() => setShowControls(true)}>
       <div className="presentation-bg">
         <div className="presentation-cross">✝</div>
       </div>
 
-      <div className="presentation-content">
+      <div className="presentation-content" key={`${currentBookId}-${currentChapter}-${verse}`}>
         <div className="presentation-ref">
-          {book.name} {chapter}:{verse}
-          {showEnglish && <span className="presentation-ref-en"> | {book.nameEn} {chapter}:{verse}</span>}
+          {currentBook.name} {currentChapter}:{verse}
+          {showEnglish && <span className="presentation-ref-en"> | {currentBook.nameEn} {currentChapter}:{verse}</span>}
         </div>
 
-        <div className={`presentation-verse-ko ${fontSizes.koSize}`} key={`ko-${verse}`}>
+        <div className={`presentation-verse-ko ${fontSizes.koSize}`}>
           {koText}
         </div>
 
-        {showEnglish && (
-          <div className={`presentation-verse-en ${fontSizes.enSize}`} key={`en-${verse}`}>
+        {showEnglish && enText && (
+          <div className={`presentation-verse-en ${fontSizes.enSize}`}>
             {enText}
           </div>
         )}
@@ -142,11 +228,11 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
           ✕ 닫기
         </button>
         <div className="pres-nav">
-          <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goPrev(); }} disabled={currentIndex === 0}>◀</button>
-          <span className="pres-progress">{currentIndex + 1} / {totalVerses}</span>
-          <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goNext(); }} disabled={currentIndex === totalVerses - 1}>▶</button>
+          <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goPrev(); }}>◀</button>
+          <span className="pres-progress">{locationLabel} {verse}절</span>
+          <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goNext(); }}>▶</button>
         </div>
-        <div className="pres-hint">← → 키 또는 화면 클릭으로 이동 | ESC 종료</div>
+        <div className="pres-hint">← → 키 또는 화면 클릭으로 이동 | 장 끝에서 자동으로 다음 장 이동 | ESC 종료</div>
       </div>
 
       <div className="presentation-progress-bar">

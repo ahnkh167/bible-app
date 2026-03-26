@@ -17,6 +17,7 @@ function App() {
   const [showEnglish, setShowEnglish] = useState(true)
   const [presentationMode, setPresentationMode] = useState(false)
   const [presentationVerse, setPresentationVerse] = useState(1)
+  const [selectedVerse, setSelectedVerse] = useState(null) // 클릭으로 선택된 구절
   const [bookmarks, setBookmarks] = useState(() => {
     const saved = localStorage.getItem('bible-bookmarks')
     return saved ? JSON.parse(saved) : []
@@ -144,6 +145,8 @@ function App() {
         currentVerse={presentationVerse}
         onClose={() => setPresentationMode(false)}
         showEnglish={showEnglish}
+        bibleData={bibleData}
+        bibleDataEn={bibleDataEn}
       />
     )
   }
@@ -177,8 +180,8 @@ function App() {
               </button>
               <button
                 className="header-btn"
-                onClick={() => startPresentation(1)}
-                title="프레젠테이션"
+                onClick={() => startPresentation(selectedVerse || 1)}
+                title={selectedVerse ? `${selectedVerse}절부터 프레젠테이션` : '프레젠테이션'}
               >
                 ▶
               </button>
@@ -209,6 +212,8 @@ function App() {
             onBookmarkToggle={toggleBookmark}
             isBookmarked={isBookmarked}
             onStartPresentation={startPresentation}
+            selectedVerse={selectedVerse}
+            onSelectVerse={setSelectedVerse}
           />
         )}
         {view === 'books' && (

@@ -89,12 +89,59 @@
   line-height: 1.7;
   font-style: italic;
 }
-.verse-bookmark {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  font-size: 14px;
+/* 선택된 구절 */
+.verse.verse-selected {
+  background: rgba(212, 165, 116, 0.15);
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+}
+
+/* 구절 액션 버튼들 */
+.verse-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.verse-play-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 12px;
+  transition: all 0.2s;
+  animation: fadeIn 0.2s ease;
+}
+.verse-play-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(139, 94, 60, 0.4);
+}
+.verse-bookmark-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 12px;
+  opacity: 0;
+  transition: all 0.2s;
+}
+.verse:hover .verse-bookmark-btn,
+.verse-bookmark-btn.active {
   opacity: 0.7;
+}
+.verse-bookmark-btn.active {
+  opacity: 1;
+}
+.verse-bookmark-btn:hover {
+  opacity: 1;
+  background: var(--accent-bg);
 }
 
 /* Chapter End */
