@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from 'react'
 import { books } from '../data/bibleMeta'
 import './PresentationMode.css'
 
@@ -9,8 +9,10 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showControls, setShowControls] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
+  const [fontScale, setFontScale] = useState(1)
+  const contentRef = useRef(null)
+  const containerRef = useRef(null)
 
-  // 현재 책/장의 데이터
   const currentBook = useMemo(() => books.find(b => b.id === currentBookId) || book, [currentBookId, book])
   const curVersesKo = useMemo(() => {
     if (currentBookId === book.id && currentChapter === chapter) return versesKo
@@ -28,35 +30,57 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
   const koText = curVersesKo[verse] || ''
   const enText = curVersesEn[verse] || ''
 
-  // 텍스트 길이에 따라 글자 크기 자동 계산 - 최대한 크게
-  const fontSizes = useMemo(() => {
-    const koLen = koText.length
-    const enLen = showEnglish ? enText.length : 0
-    let koSize, enSize
-    if (koLen <= 20) {
-      koSize = 'pres-text-xl'
-      enSize = 'pres-text-lg'
-    } else if (koLen <= 40) {
-      koSize = 'pres-text-lg'
-      enSize = 'pres-text-md'
-    } else if (koLen <= 80) {
-      koSize = 'pres-text-md'
-      enSize = 'pres-text-sm'
-    } else if (koLen <= 150) {
-      koSize = 'pres-text-sm'
-      enSize = 'pres-text-xs'
-    } else {
-      koSize = 'pres-text-xs'
-      enSize = 'pres-text-xs'
-    }
-    return { koSize, enSize }
+  // 화면에 맞게 폰트 자동 조절
+  useLayoutEffect(() => {
+    setFontScale(1) // 먼저 리셋
   }, [koText, enText, showEnglish])
+
+  useEffect(() => {
+    const fitText = () => {
+      const container = containerRef.current
+      const content = contentRef.current
+      if (!container || !content) return
+
+      // 사용 가능한 높이 (화면 - 상단 참조 - 하단 여백)
+      const availableHeight = container.clientHeight
+      const contentHeight = content.scrollHeight
+
+      if (contentHeight > availableHeight && fontScale > 0.3) {
+        // 비율 계산으로 한번에 줄이기
+        const ratio = availableHeight / contentHeight
+        const newScale = Math.max(0.3, fontScale * ratio * 0.95) // 약간 여유
+        setFontScale(newScale)
+      }
+    }
+
+    // 렌더링 후 측정
+    const timer = requestAnimationFrame(fitText)
+    return () => cancelAnimationFrame(timer)
+  }, [fontScale, koText, enText, showEnglish])
+
+  // 기본 폰트 크기 계산 (한글 길이 기준)
+  const baseFontSize = useMemo(() => {
+    const koLen = koText.length
+    if (koLen <= 15) return 90
+    if (koLen <= 25) return 72
+    if (koLen <= 40) return 58
+    if (koLen <= 60) return 48
+    if (koLen <= 100) return 40
+    if (koLen <= 150) return 34
+    return 28
+  }, [koText])
+
+  const enBaseFontSize = useMemo(() => {
+    return Math.max(20, baseFontSize * 0.72)
+  }, [baseFontSize])
+
+  const koFontPx = Math.round(baseFontSize * fontScale)
+  const enFontPx = Math.round(enBaseFontSize * fontScale)
 
   // 다음 장으로 이동
   const goNextChapter = useCallback(() => {
     const bookIdx = books.findIndex(b => b.id === currentBookId)
     if (currentChapter < currentBook.chapters) {
-      // 같은 책의 다음 장
       setTransitioning(true)
       setTimeout(() => {
         setCurrentChapter(prev => prev + 1)
@@ -65,7 +89,6 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
       }, 200)
       return true
     } else if (bookIdx < books.length - 1) {
-      // 다음 책의 1장
       const nextBook = books[bookIdx + 1]
       setTransitioning(true)
       setTimeout(() => {
@@ -79,26 +102,23 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     return false
   }, [currentBookId, currentChapter, currentBook])
 
-  // 이전 장으로 이동
   const goPrevChapter = useCallback(() => {
     const bookIdx = books.findIndex(b => b.id === currentBookId)
     if (currentChapter > 1) {
-      // 같은 책의 이전 장
       setTransitioning(true)
       setTimeout(() => {
         setCurrentChapter(prev => prev - 1)
-        setVerse(-1) // 마지막 절로 세팅 (아래에서 처리)
+        setVerse(-1)
         setTransitioning(false)
       }, 200)
       return true
     } else if (bookIdx > 0) {
-      // 이전 책의 마지막 장
       const prevBook = books[bookIdx - 1]
       setTransitioning(true)
       setTimeout(() => {
         setCurrentBookId(prevBook.id)
         setCurrentChapter(prevBook.chapters)
-        setVerse(-1) // 마지막 절로
+        setVerse(-1)
         setTransitioning(false)
       }, 200)
       return true
@@ -106,7 +126,6 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     return false
   }, [currentBookId, currentChapter])
 
-  // verse가 -1이면 마지막 절로 세팅
   useEffect(() => {
     if (verse === -1 && verseKeys.length > 0) {
       setVerse(verseKeys[verseKeys.length - 1])
@@ -147,7 +166,6 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
       setVerse(verseKeys[currentIndex + 1])
       setShowControls(true)
     } else {
-      // 마지막 절 → 다음 장
       goNextChapter()
       setShowControls(true)
     }
@@ -158,7 +176,6 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
       setVerse(verseKeys[currentIndex - 1])
       setShowControls(true)
     } else {
-      // 첫 절 → 이전 장 마지막 절
       goPrevChapter()
       setShowControls(true)
     }
@@ -188,6 +205,13 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     return () => window.removeEventListener('keydown', handleKey)
   }, [goNext, goPrev, onClose])
 
+  // 화면 리사이즈 시 재계산
+  useEffect(() => {
+    const handleResize = () => setFontScale(1)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const handleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
@@ -200,9 +224,7 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     }
   }
 
-  // 현재 위치 표시 텍스트
   const locationLabel = `${currentBook.name} ${currentChapter}장`
-  const locationLabelEn = `${currentBook.nameEn} ${currentChapter}`
 
   return (
     <div className={`presentation ${transitioning ? 'pres-transitioning' : ''}`} onClick={handleClick} onMouseMove={() => setShowControls(true)}>
@@ -210,21 +232,23 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
         <div className="presentation-cross">✝</div>
       </div>
 
-      <div className="presentation-content" key={`${currentBookId}-${currentChapter}-${verse}`}>
-        <div className="presentation-ref">
-          {currentBook.name} {currentChapter}:{verse}
-          {showEnglish && <span className="presentation-ref-en"> | {currentBook.nameEn} {currentChapter}:{verse}</span>}
-        </div>
-
-        <div className={`presentation-verse-ko ${fontSizes.koSize}`}>
-          {koText}
-        </div>
-
-        {showEnglish && enText && (
-          <div className={`presentation-verse-en ${fontSizes.enSize}`}>
-            {enText}
+      <div className="presentation-container" ref={containerRef}>
+        <div className="presentation-content" ref={contentRef} key={`${currentBookId}-${currentChapter}-${verse}`}>
+          <div className="presentation-ref">
+            {currentBook.name} {currentChapter}:{verse}
+            {showEnglish && <span className="presentation-ref-en"> | {currentBook.nameEn} {currentChapter}:{verse}</span>}
           </div>
-        )}
+
+          <div className="presentation-verse-ko" style={{ fontSize: `${koFontPx}px` }}>
+            {koText}
+          </div>
+
+          {showEnglish && enText && (
+            <div className="presentation-verse-en" style={{ fontSize: `${enFontPx}px` }}>
+              {enText}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={`presentation-controls ${showControls ? 'visible' : ''}`}>
@@ -236,7 +260,7 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
           <span className="pres-progress">{locationLabel} {verse}절</span>
           <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goNext(); }}>▶</button>
         </div>
-        <div className="pres-hint">← → 키 또는 화면 클릭으로 이동 | 장 끝에서 자동으로 다음 장 이동 | ESC 종료</div>
+        <div className="pres-hint">← → 키 또는 화면 클릭으로 이동 | ESC 종료</div>
       </div>
 
       <div className="presentation-progress-bar">
