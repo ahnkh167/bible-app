@@ -13,7 +13,7 @@ function App() {
   const [currentBook, setCurrentBook] = useState('gen')
   const [currentChapter, setCurrentChapter] = useState(1)
   const [view, setView] = useState('read') // 'read' | 'books' | 'search'
-  const [fontSize, setFontSize] = useState(22)
+  const [fontSize, setFontSize] = useState(26)
   const [showEnglish, setShowEnglish] = useState(true)
   const [presentationMode, setPresentationMode] = useState(false)
   const [presentationVerse, setPresentationVerse] = useState(1)
