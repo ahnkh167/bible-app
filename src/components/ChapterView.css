@@ -1,57 +1,60 @@
 .chapter-view {
-  max-width: 680px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 20px 16px;
+  padding: 24px 20px;
   animation: fadeIn 0.3s ease;
 }
 
 .chapter-title {
   text-align: center;
-  padding: 20px 0 28px;
+  padding: 28px 0 32px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 .chapter-title h2 {
-  font-size: 14px;
+  font-family: var(--font-serif);
+  font-size: 15px;
   font-weight: 400;
   color: var(--text-secondary);
-  letter-spacing: 4px;
+  letter-spacing: 6px;
   margin-bottom: 2px;
 }
 .chapter-title-en {
   font-size: 12px;
   font-weight: 300;
   color: var(--text-secondary);
-  opacity: 0.7;
-  letter-spacing: 2px;
-  margin-bottom: 4px;
+  opacity: 0.6;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
 }
 .chapter-number {
-  font-size: 48px;
-  font-weight: 200;
+  font-family: var(--font-serif);
+  font-size: 56px;
+  font-weight: 300;
   color: var(--accent);
   letter-spacing: -2px;
 }
 
 /* Verses */
 .verses {
-  line-height: 1.85;
+  line-height: 2;
   color: var(--text-verse);
+  font-size: 20px;
 }
 .verse {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 6px 8px;
-  margin: 0 -8px;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 10px 12px;
+  margin: 0 -12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background 0.15s;
   position: relative;
 }
 .verses.bilingual .verse {
-  padding: 10px 8px;
-  margin-bottom: 4px;
+  padding: 14px 12px;
+  margin-bottom: 6px;
 }
 .verse:hover {
   background: var(--accent-bg);
@@ -59,15 +62,16 @@
 .verse.bookmarked {
   background: var(--accent-bg);
   border-left: 3px solid var(--accent);
-  padding-left: 10px;
+  padding-left: 14px;
 }
 .verse-num {
-  font-size: 0.65em;
+  font-family: var(--font);
+  font-size: 0.55em;
   color: var(--accent);
   font-weight: 700;
-  min-width: 2em;
+  min-width: 2.2em;
   text-align: right;
-  padding-top: 0.35em;
+  padding-top: 0.55em;
   flex-shrink: 0;
   user-select: none;
 }
@@ -75,25 +79,32 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .verse-text {
   word-break: keep-all;
 }
 .verse-ko {
+  font-family: var(--font-serif);
   color: var(--text-verse);
+  font-size: 20px;
+  line-height: 1.85;
+  font-weight: 400;
 }
 .verse-en {
+  font-family: Georgia, 'Times New Roman', serif;
   color: var(--text-secondary);
-  font-size: 0.92em;
-  line-height: 1.7;
+  font-size: 16px;
+  line-height: 1.75;
   font-style: italic;
+  opacity: 0.75;
 }
+
 /* 선택된 구절 */
 .verse.verse-selected {
-  background: rgba(212, 165, 116, 0.15);
+  background: rgba(212, 165, 116, 0.12);
   border-left: 3px solid var(--accent);
-  padding-left: 10px;
+  padding-left: 14px;
 }
 
 /* 구절 액션 버튼들 */
@@ -102,11 +113,11 @@
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
-  padding-top: 2px;
+  padding-top: 4px;
 }
 .verse-play-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,7 +158,7 @@
 /* Chapter End */
 .chapter-end {
   text-align: center;
-  padding: 40px 0 20px;
+  padding: 48px 0 24px;
   color: var(--text-secondary);
   font-size: 14px;
 }
@@ -164,7 +175,7 @@
 }
 .next-chapter-btn {
   margin-top: 16px;
-  padding: 12px 28px;
+  padding: 14px 32px;
   background: var(--accent);
   color: white;
   font-size: 15px;

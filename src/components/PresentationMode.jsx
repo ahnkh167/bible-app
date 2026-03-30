@@ -58,20 +58,22 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     return () => cancelAnimationFrame(timer)
   }, [fontScale, koText, enText, showEnglish])
 
-  // 기본 폰트 크기 계산 (한글 길이 기준)
+  // 기본 폰트 크기 계산 (한글 길이 기준) - 최대한 크게
   const baseFontSize = useMemo(() => {
     const koLen = koText.length
-    if (koLen <= 15) return 90
-    if (koLen <= 25) return 72
-    if (koLen <= 40) return 58
-    if (koLen <= 60) return 48
-    if (koLen <= 100) return 40
-    if (koLen <= 150) return 34
-    return 28
+    if (koLen <= 10) return 110
+    if (koLen <= 20) return 90
+    if (koLen <= 30) return 76
+    if (koLen <= 45) return 64
+    if (koLen <= 60) return 54
+    if (koLen <= 80) return 46
+    if (koLen <= 120) return 40
+    if (koLen <= 160) return 36
+    return 32
   }, [koText])
 
   const enBaseFontSize = useMemo(() => {
-    return Math.max(20, baseFontSize * 0.72)
+    return Math.max(22, baseFontSize * 0.65)
   }, [baseFontSize])
 
   const koFontPx = Math.round(baseFontSize * fontScale)

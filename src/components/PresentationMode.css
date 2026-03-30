@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #050510;
+  background: #050508;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-/* Background */
+/* Background - subtle cross */
 .presentation-bg {
   position: absolute;
   inset: 0;
@@ -21,17 +21,17 @@
   pointer-events: none;
 }
 .presentation-cross {
-  font-size: 400px;
-  opacity: 0.025;
+  font-size: 500px;
+  opacity: 0.02;
   color: #d4a574;
 }
 
-/* 컨테이너 - 화면 전체 영역 (폰트 자동 조절 기준) */
+/* 컨테이너 - 화면 전체 영역 */
 .presentation-container {
   position: relative;
   z-index: 1;
-  width: 92vw;
-  height: 82vh;
+  width: 90vw;
+  height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation: pressFadeIn 0.4s ease;
+  animation: pressFadeIn 0.35s ease;
 }
 
 @keyframes pressFadeIn {
@@ -55,42 +55,47 @@
 
 .presentation.pres-transitioning .presentation-content {
   opacity: 0.3;
-  transition: opacity 0.2s;
+  transition: opacity 0.15s;
 }
 
-/* 구절 참조 */
+/* 구절 참조 - 상단 */
 .presentation-ref {
-  font-size: 24px;
-  color: #e8c090;
-  font-weight: 600;
-  letter-spacing: 3px;
-  margin-bottom: 4vh;
-  text-shadow: 0 0 30px rgba(232, 192, 144, 0.15);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 22px;
+  color: #c9935e;
+  font-weight: 500;
+  letter-spacing: 4px;
+  margin-bottom: 5vh;
+  text-transform: uppercase;
 }
 .presentation-ref-en {
   font-weight: 400;
-  opacity: 0.7;
+  opacity: 0.6;
+  letter-spacing: 2px;
 }
 
-/* 한국어 구절 */
+/* 한국어 구절 - 최대한 크게 */
 .presentation-verse-ko {
-  font-weight: 600;
-  line-height: 1.45;
+  font-family: 'Noto Serif KR', 'Batang', Georgia, serif;
+  font-weight: 500;
+  line-height: 1.5;
   color: #ffffff;
   word-break: keep-all;
-  margin-bottom: 3vh;
-  text-shadow: 0 2px 20px rgba(255, 255, 255, 0.08);
-  width: 90vw;
+  margin-bottom: 4vh;
+  width: 88vw;
+  max-width: 88vw;
 }
 
 /* 영어 구절 */
 .presentation-verse-en {
+  font-family: Georgia, 'Times New Roman', serif;
   font-weight: 400;
-  line-height: 1.4;
-  color: #e8d0a8;
+  line-height: 1.45;
+  color: #d4b88a;
   font-style: italic;
-  width: 88vw;
-  text-shadow: 0 2px 15px rgba(224, 200, 152, 0.08);
+  width: 86vw;
+  max-width: 86vw;
+  opacity: 0.85;
 }
 
 /* Controls */
@@ -103,9 +108,9 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 16px;
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-  background: linear-gradient(transparent, rgba(5, 5, 16, 0.95));
+  padding: 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, rgba(5, 5, 8, 0.97));
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
@@ -118,16 +123,17 @@
 .pres-nav {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 .pres-ctrl-btn {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 16px;
-  padding: 10px 20px;
+  padding: 10px 22px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 .pres-ctrl-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.18);
@@ -139,12 +145,14 @@
 .pres-progress {
   color: rgba(255, 255, 255, 0.5);
   font-size: 14px;
-  min-width: 80px;
+  min-width: 100px;
   text-align: center;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 .pres-hint {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.2);
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* Progress bar */
@@ -154,12 +162,12 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   z-index: 20;
 }
 .presentation-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #8b5e3c, #e8c090);
+  background: linear-gradient(90deg, #8b5e3c, #d4a574);
   transition: width 0.3s ease;
 }
 
@@ -167,11 +175,20 @@
 @media (max-width: 768px) {
   .presentation-container {
     width: 94vw;
-    height: 78vh;
+    height: 76vh;
   }
   .presentation-ref {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 3vh;
+    letter-spacing: 2px;
   }
-  .presentation-cross { font-size: 250px; }
+  .presentation-verse-ko {
+    width: 92vw;
+    max-width: 92vw;
+  }
+  .presentation-verse-en {
+    width: 90vw;
+    max-width: 90vw;
+  }
+  .presentation-cross { font-size: 300px; }
 }

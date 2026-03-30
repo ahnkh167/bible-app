@@ -15,23 +15,24 @@
   --nav-bg: #1a1a2e;
   --radius: 12px;
   --font: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Noto Serif KR', 'Batang', Georgia, 'Times New Roman', serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f0f17;
-    --bg-card: #1a1a2e;
-    --text: #e0ddd5;
+    --bg: #0a0a12;
+    --bg-card: #141422;
+    --text: #e8e4dc;
     --text-secondary: #9ca3af;
-    --text-verse: #f0ead6;
+    --text-verse: #f5f0e0;
     --accent: #d4a574;
     --accent-light: #e8c9a0;
-    --accent-bg: rgba(212, 165, 116, 0.12);
-    --border: #2e2e3e;
+    --accent-bg: rgba(212, 165, 116, 0.10);
+    --border: #242438;
     --shadow: 0 1px 3px rgba(0,0,0,0.3);
     --shadow-lg: 0 4px 12px rgba(0,0,0,0.4);
-    --header-bg: #12121e;
-    --nav-bg: #12121e;
+    --header-bg: #0e0e1a;
+    --nav-bg: #0e0e1a;
   }
 }
 
