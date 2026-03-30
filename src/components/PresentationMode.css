@@ -76,7 +76,7 @@
 
 /* 한국어 구절 - 최대한 크게 */
 .presentation-verse-ko {
-  font-family: 'Noto Serif KR', 'Batang', Georgia, serif;
+  font-family: 'PyeojinGothic', 'Noto Sans KR', sans-serif;
   font-weight: 500;
   line-height: 1.5;
   color: #ffffff;

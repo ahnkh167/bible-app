@@ -1,3 +1,22 @@
+@font-face {
+  font-family: 'PyeojinGothic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2504-1@1.0/PyeojinGothic-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PyeojinGothic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2504-1@1.0/PyeojinGothic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PyeojinGothic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2504-1@1.0/PyeojinGothic-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   --bg: #faf9f6;
   --bg-card: #ffffff;
@@ -14,8 +33,8 @@
   --header-text: #f0ead6;
   --nav-bg: #1a1a2e;
   --radius: 12px;
-  --font: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-serif: 'Noto Serif KR', 'Batang', Georgia, 'Times New Roman', serif;
+  --font: 'PyeojinGothic', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'PyeojinGothic', 'Noto Sans KR', -apple-system, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

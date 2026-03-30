@@ -12,7 +12,7 @@
   margin-bottom: 32px;
 }
 .chapter-title h2 {
-  font-family: var(--font-serif);
+  font-family: var(--font);
   font-size: 15px;
   font-weight: 400;
   color: var(--text-secondary);
@@ -28,7 +28,7 @@
   margin-bottom: 8px;
 }
 .chapter-number {
-  font-family: var(--font-serif);
+  font-family: var(--font);
   font-size: 56px;
   font-weight: 300;
   color: var(--accent);
@@ -85,7 +85,7 @@
   word-break: keep-all;
 }
 .verse-ko {
-  font-family: var(--font-serif);
+  font-family: var(--font);
   color: var(--text-verse);
   font-size: 20px;
   line-height: 1.85;
