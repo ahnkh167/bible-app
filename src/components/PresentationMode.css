@@ -90,12 +90,11 @@
 .presentation-verse-en {
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.5;
   color: #d4b88a;
   font-style: italic;
-  width: 86vw;
-  max-width: 86vw;
-  opacity: 0.85;
+  width: 88vw;
+  max-width: 88vw;
 }
 
 /* Controls */

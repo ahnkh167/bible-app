@@ -94,8 +94,8 @@
 .verse-en {
   font-family: Georgia, 'Times New Roman', serif;
   color: var(--text-secondary);
-  font-size: 16px;
-  line-height: 1.75;
+  font-size: 20px;
+  line-height: 1.85;
   font-style: italic;
   opacity: 0.75;
 }
