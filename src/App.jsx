@@ -196,17 +196,28 @@ function App() {
     const versesKo = bibleData[currentBook]?.[currentChapter] || {}
     const versesEn = bibleDataEn?.[currentBook]?.[currentChapter] || {}
     return (
-      <PresentationMode
-        book={book}
-        chapter={currentChapter}
-        versesKo={versesKo}
-        versesEn={versesEn}
-        currentVerse={presentationVerse}
-        onClose={() => setPresentationMode(false)}
-        showEnglish={showEnglish}
-        bibleData={bibleData}
-        bibleDataEn={bibleDataEn}
-      />
+      <>
+        <PresentationMode
+          book={book}
+          chapter={currentChapter}
+          versesKo={versesKo}
+          versesEn={versesEn}
+          currentVerse={presentationVerse}
+          onClose={() => setPresentationMode(false)}
+          showEnglish={showEnglish}
+          bibleData={bibleData}
+          bibleDataEn={bibleDataEn}
+          onWordClick={handleWordClick}
+        />
+        {wordPopup && (
+          <WordPopup
+            strong={wordPopup.strong}
+            entry={wordPopup.entry}
+            wordText={wordPopup.wordText}
+            onClose={() => setWordPopup(null)}
+          />
+        )}
+      </>
     )
   }
 

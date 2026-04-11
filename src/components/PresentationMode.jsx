@@ -2,7 +2,31 @@ import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } fr
 import { books } from '../data/bibleMeta'
 import './PresentationMode.css'
 
-function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onClose, showEnglish, bibleData, bibleDataEn }) {
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+  } catch (e) {}
+  try {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    ta.style.left = '-9999px'
+    document.body.appendChild(ta)
+    ta.focus()
+    ta.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(ta)
+    return ok
+  } catch (e) {
+    return false
+  }
+}
+
+function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onClose, showEnglish, bibleData, bibleDataEn, onWordClick }) {
   const [currentBookId, setCurrentBookId] = useState(book.id)
   const [currentChapter, setCurrentChapter] = useState(chapter)
   const [verse, setVerse] = useState(currentVerse)
@@ -10,8 +34,29 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
   const [showControls, setShowControls] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
   const [fontScale, setFontScale] = useState(1)
+  const [interlinear, setInterlinear] = useState(null)
+  const [copyToast, setCopyToast] = useState(false)
   const contentRef = useRef(null)
   const containerRef = useRef(null)
+
+  // 현재 책의 인터린어 데이터 동적 로드 (있는 책만)
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      try {
+        if (currentBookId === 'gen') {
+          const mod = await import('../data/interlinear/gen.json')
+          if (!cancelled) setInterlinear(mod.default)
+        } else {
+          if (!cancelled) setInterlinear(null)
+        }
+      } catch (e) {
+        if (!cancelled) setInterlinear(null)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [currentBookId])
 
   const currentBook = useMemo(() => books.find(b => b.id === currentBookId) || book, [currentBookId, book])
   const curVersesKo = useMemo(() => {
@@ -231,6 +276,44 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
 
   const locationLabel = `${currentBook.name} ${currentChapter}장`
 
+  // 토큰 렌더링 (인터린어 데이터가 있으면 단어 클릭 가능)
+  const interVerse = interlinear?.[String(currentChapter)]?.[String(verse)]
+  const renderTokens = (tokens, fallbackText, extraClass = '') => {
+    if (!tokens || tokens.length === 0 || !onWordClick) {
+      return <>{fallbackText}</>
+    }
+    return tokens.map((tok, i) => {
+      if (!tok.strong) {
+        return <span key={i}>{tok.text}</span>
+      }
+      return (
+        <span
+          key={i}
+          className={`pres-word-clickable ${extraClass}`}
+          onClick={(e) => {
+            e.stopPropagation()
+            onWordClick(tok.strong, tok.text.trim())
+          }}
+        >
+          {tok.text}
+        </span>
+      )
+    })
+  }
+
+  // 구절 복사
+  const handleCopy = async (e) => {
+    e.stopPropagation()
+    const ref = `${currentBook.name} ${currentChapter}:${verse}`
+    let text = `${ref}\n${koText}`
+    if (showEnglish && enText) text += `\n${enText}`
+    const ok = await copyToClipboard(text)
+    if (ok) {
+      setCopyToast(true)
+      setTimeout(() => setCopyToast(false), 1500)
+    }
+  }
+
   return (
     <div className={`presentation ${transitioning ? 'pres-transitioning' : ''}`} onClick={handleClick} onMouseMove={() => setShowControls(true)}>
       <div className="presentation-bg">
@@ -245,27 +328,36 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
           </div>
 
           <div className="presentation-verse-ko" style={{ fontSize: `${koFontPx}px` }}>
-            {koText}
+            {renderTokens(interVerse?.ko, koText)}
           </div>
 
           {showEnglish && enText && (
             <div className="presentation-verse-en" style={{ fontSize: `${enFontPx}px` }}>
-              {enText}
+              {renderTokens(interVerse?.en, enText, 'en')}
             </div>
           )}
         </div>
       </div>
 
+      {copyToast && (
+        <div className="pres-copy-toast">✓ 복사됨</div>
+      )}
+
       <div className={`presentation-controls ${showControls ? 'visible' : ''}`}>
-        <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); onClose(); }}>
-          ✕ 닫기
-        </button>
+        <div className="pres-top-row">
+          <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); onClose(); }}>
+            ✕ 닫기
+          </button>
+          <button className="pres-ctrl-btn" onClick={handleCopy} title="구절 복사">
+            📋 복사
+          </button>
+        </div>
         <div className="pres-nav">
           <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goPrev(); }}>◀</button>
           <span className="pres-progress">{locationLabel} {verse}절</span>
           <button className="pres-ctrl-btn" onClick={(e) => { e.stopPropagation(); goNext(); }}>▶</button>
         </div>
-        <div className="pres-hint">← → 키 또는 화면 클릭으로 이동 | ESC 종료</div>
+        <div className="pres-hint">← → 키 또는 화면 클릭으로 이동 | ESC 종료 | 단어 클릭 → 원어 보기</div>
       </div>
 
       <div className="presentation-progress-bar">

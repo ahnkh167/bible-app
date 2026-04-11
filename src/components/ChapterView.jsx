@@ -1,9 +1,36 @@
 import { useEffect, useRef, useState } from 'react'
 import './ChapterView.css'
 
+// 클립보드 복사 (Clipboard API + execCommand fallback)
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+  } catch (e) { /* fall through */ }
+  try {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    ta.style.left = '-9999px'
+    document.body.appendChild(ta)
+    ta.focus()
+    ta.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(ta)
+    return ok
+  } catch (e) {
+    console.error('복사 실패:', e)
+    return false
+  }
+}
+
 function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fontSize, onNavigate, onBookmarkToggle, isBookmarked, onStartPresentation, selectedVerse, onSelectVerse, interlinear, onWordClick }) {
   const contentRef = useRef(null)
   const [localSelected, setLocalSelected] = useState(null)
+  const [copiedNum, setCopiedNum] = useState(null)
 
   useEffect(() => {
     if (contentRef.current) {
@@ -12,6 +39,18 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
     window.scrollTo(0, 0)
     setLocalSelected(null)
   }, [bookId, chapter])
+
+  const handleCopy = async (e, verseNum, koText, enText) => {
+    e.stopPropagation()
+    const ref = `${book.name} ${chapter}:${verseNum}`
+    let text = `${ref}\n${koText}`
+    if (showEnglish && enText) text += `\n${enText}`
+    const ok = await copyToClipboard(text)
+    if (ok) {
+      setCopiedNum(Number(verseNum))
+      setTimeout(() => setCopiedNum(null), 1500)
+    }
+  }
 
   const verseEntries = Object.entries(verses).sort((a, b) => Number(a[0]) - Number(b[0]))
 
@@ -91,13 +130,22 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
             </div>
             <div className="verse-actions">
               {localSelected === Number(num) && (
-                <button
-                  className="verse-play-btn"
-                  onClick={(e) => { e.stopPropagation(); onStartPresentation(Number(num)); }}
-                  title="이 구절부터 프레젠테이션"
-                >
-                  ▶
-                </button>
+                <>
+                  <button
+                    className="verse-play-btn"
+                    onClick={(e) => { e.stopPropagation(); onStartPresentation(Number(num)); }}
+                    title="이 구절부터 프레젠테이션"
+                  >
+                    ▶
+                  </button>
+                  <button
+                    className={`verse-copy-btn ${copiedNum === Number(num) ? 'copied' : ''}`}
+                    onClick={(e) => handleCopy(e, num, text, versesEn[num])}
+                    title="구절 복사"
+                  >
+                    {copiedNum === Number(num) ? '✓' : '📋'}
+                  </button>
+                </>
               )}
               <button
                 className={`verse-bookmark-btn ${isBookmarked(bookId, chapter, Number(num)) ? 'active' : ''}`}

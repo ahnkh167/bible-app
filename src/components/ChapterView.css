@@ -159,6 +159,31 @@
   transform: scale(1.1);
   box-shadow: 0 2px 8px rgba(139, 94, 60, 0.4);
 }
+.verse-copy-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 13px;
+  border: 1px solid var(--accent);
+  transition: all 0.2s;
+  animation: fadeIn 0.2s ease;
+}
+.verse-copy-btn:hover {
+  transform: scale(1.1);
+  background: var(--accent);
+  color: white;
+}
+.verse-copy-btn.copied {
+  background: var(--accent);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
 .verse-bookmark-btn {
   width: 28px;
   height: 28px;

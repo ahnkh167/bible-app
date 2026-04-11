@@ -97,6 +97,51 @@
   max-width: 88vw;
 }
 
+/* 클릭 가능한 단어 (프레젠테이션) */
+.pres-word-clickable {
+  cursor: pointer;
+  position: relative;
+  border-radius: 4px;
+  padding: 0 2px;
+  transition: color 0.15s, background 0.15s, text-shadow 0.15s;
+}
+.pres-word-clickable:hover {
+  color: #f4d4a1;
+  background: rgba(212, 165, 116, 0.18);
+  text-shadow: 0 0 24px rgba(212, 165, 116, 0.5);
+}
+.pres-word-clickable.en:hover {
+  color: #f4d4a1;
+}
+
+/* 복사 토스트 */
+.pres-copy-toast {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(212, 165, 116, 0.95);
+  color: #050508;
+  padding: 12px 28px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'PyeojinGothic', 'Noto Sans KR', sans-serif;
+  z-index: 10000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: presToastIn 0.3s ease;
+}
+@keyframes presToastIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.pres-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 /* Controls */
 .presentation-controls {
   position: fixed;
