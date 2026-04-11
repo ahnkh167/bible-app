@@ -7,6 +7,9 @@ import PresentationMode from './components/PresentationMode'
 import WordPopup from './components/WordPopup'
 import './App.css'
 
+// 인터린어 데이터 lazy 로더 (Vite glob)
+const interlinearModules = import.meta.glob('./data/interlinear/*.json')
+
 function App() {
   const [bibleData, setBibleData] = useState(null)
   const [bibleDataEn, setBibleDataEn] = useState(null)
@@ -73,11 +76,12 @@ function App() {
     let cancelled = false
     const loadInterlinear = async () => {
       try {
-        if (currentBook === 'gen') {
-          const mod = await import('./data/interlinear/gen.json')
+        const path = `./data/interlinear/${currentBook}.json`
+        const loader = interlinearModules[path]
+        if (loader) {
+          const mod = await loader()
           if (!cancelled) setInterlinearData(mod.default)
         } else {
-          // 아직 다른 책의 인터린어 데이터 없음
           if (!cancelled) setInterlinearData(null)
         }
       } catch (e) {

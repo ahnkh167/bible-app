@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } fr
 import { books } from '../data/bibleMeta'
 import './PresentationMode.css'
 
+// 인터린어 데이터 lazy 로더 (Vite glob)
+const interlinearModules = import.meta.glob('../data/interlinear/*.json')
+
 async function copyToClipboard(text) {
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -44,8 +47,10 @@ function PresentationMode({ book, chapter, versesKo, versesEn, currentVerse, onC
     let cancelled = false
     const load = async () => {
       try {
-        if (currentBookId === 'gen') {
-          const mod = await import('../data/interlinear/gen.json')
+        const path = `../data/interlinear/${currentBookId}.json`
+        const loader = interlinearModules[path]
+        if (loader) {
+          const mod = await loader()
           if (!cancelled) setInterlinear(mod.default)
         } else {
           if (!cancelled) setInterlinear(null)
