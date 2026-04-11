@@ -21,7 +21,20 @@
       "Bash(gh repo:*)",
       "Bash(gh api:*)",
       "Bash(gh run:*)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(npx skills:*)",
+      "WebFetch(domain:noonnu.cc)",
+      "Bash(mkdir -p scripts src/data/strongs src/data/interlinear)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/openscriptures/strongs/master/hebrew/strongs-hebrew-dictionary.js\" -o /tmp/strongs-hebrew.js)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/openscriptures/strongs/master/greek/strongs-greek-dictionary.js\" -o /tmp/strongs-greek.js)",
+      "Bash(node scripts/buildStrongs.js)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/TehShrike/kjv/master/out/kjv.json\" -o /tmp/kjv.json)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/openbibleinfo/Bible-Passage-Reference-Parser/master/README.md\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/aruljohn/Bible-kjv/master/Genesis.json\" -o /tmp/kjv-gen.json)",
+      "Bash(curl -sL \"https://bolls.life/get-text/YLT/1/1/\" -o /tmp/test-bolls.json)",
+      "Bash(curl -sL \"https://bolls.life/get-text/KJV/1/1/\" -o /tmp/test-kjv.json)",
+      "Bash(node scripts/buildInterlinearGen.js)",
+      "Bash(node -e ':*)"
     ]
   }
 }

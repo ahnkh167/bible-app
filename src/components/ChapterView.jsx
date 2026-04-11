@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './ChapterView.css'
 
-function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fontSize, onNavigate, onBookmarkToggle, isBookmarked, onStartPresentation, selectedVerse, onSelectVerse }) {
+function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fontSize, onNavigate, onBookmarkToggle, isBookmarked, onStartPresentation, selectedVerse, onSelectVerse, interlinear, onWordClick }) {
   const contentRef = useRef(null)
   const [localSelected, setLocalSelected] = useState(null)
 
@@ -36,6 +36,34 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
     onBookmarkToggle(bookId, chapter, Number(verseNum))
   }
 
+  // 토큰화된 구절 렌더링 (인터린어 데이터가 있으면 단어별 클릭 가능)
+  const renderTokens = (tokens, fallbackText, langClass) => {
+    if (!tokens || tokens.length === 0) {
+      return <span className={`verse-text ${langClass}`}>{fallbackText}</span>
+    }
+    return (
+      <span className={`verse-text ${langClass}`}>
+        {tokens.map((tok, i) => {
+          if (!tok.strong) {
+            return <span key={i}>{tok.text}</span>
+          }
+          return (
+            <span
+              key={i}
+              className="word-clickable"
+              onClick={(e) => {
+                e.stopPropagation()
+                onWordClick?.(tok.strong, tok.text.trim())
+              }}
+            >
+              {tok.text}
+            </span>
+          )
+        })}
+      </span>
+    )
+  }
+
   return (
     <div className="chapter-view" ref={contentRef}>
       <div className="chapter-title">
@@ -45,7 +73,9 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
       </div>
 
       <div className={`verses ${showEnglish ? 'bilingual' : ''}`} style={{ fontSize: `${fontSize}px` }}>
-        {verseEntries.map(([num, text]) => (
+        {verseEntries.map(([num, text]) => {
+          const interVerse = interlinear?.[String(chapter)]?.[String(num)]
+          return (
           <div
             key={num}
             className={`verse ${isBookmarked(bookId, chapter, Number(num)) ? 'bookmarked' : ''} ${localSelected === Number(num) ? 'verse-selected' : ''}`}
@@ -54,9 +84,9 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
           >
             <span className="verse-num">{num}</span>
             <div className="verse-content">
-              <span className="verse-text verse-ko">{text}</span>
+              {renderTokens(interVerse?.ko, text, 'verse-ko')}
               {showEnglish && versesEn[num] && (
-                <span className="verse-text verse-en">{versesEn[num]}</span>
+                renderTokens(interVerse?.en, versesEn[num], 'verse-en')
               )}
             </div>
             <div className="verse-actions">
@@ -78,7 +108,8 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
               </button>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       <div className="chapter-end">

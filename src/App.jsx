@@ -4,6 +4,7 @@ import BookSelector from './components/BookSelector'
 import ChapterView from './components/ChapterView'
 import SearchPanel from './components/SearchPanel'
 import PresentationMode from './components/PresentationMode'
+import WordPopup from './components/WordPopup'
 import './App.css'
 
 function App() {
@@ -18,6 +19,14 @@ function App() {
   const [presentationMode, setPresentationMode] = useState(false)
   const [presentationVerse, setPresentationVerse] = useState(1)
   const [selectedVerse, setSelectedVerse] = useState(null) // 클릭으로 선택된 구절
+
+  // 인터린어 데이터 (현재 책)
+  const [interlinearData, setInterlinearData] = useState(null)
+  // 원어 팝업 상태
+  const [wordPopup, setWordPopup] = useState(null) // { strong, entry, wordText }
+  // Strong's 사전 (lazy load)
+  const [strongsHebrew, setStrongsHebrew] = useState(null)
+  const [strongsGreek, setStrongsGreek] = useState(null)
   const [bookmarks, setBookmarks] = useState(() => {
     const saved = localStorage.getItem('bible-bookmarks')
     return saved ? JSON.parse(saved) : []
@@ -58,6 +67,56 @@ function App() {
   useEffect(() => {
     localStorage.setItem('bible-bookmarks', JSON.stringify(bookmarks))
   }, [bookmarks])
+
+  // 현재 책의 인터린어 데이터 동적 로드 (있는 책만)
+  useEffect(() => {
+    let cancelled = false
+    const loadInterlinear = async () => {
+      try {
+        if (currentBook === 'gen') {
+          const mod = await import('./data/interlinear/gen.json')
+          if (!cancelled) setInterlinearData(mod.default)
+        } else {
+          // 아직 다른 책의 인터린어 데이터 없음
+          if (!cancelled) setInterlinearData(null)
+        }
+      } catch (e) {
+        if (!cancelled) setInterlinearData(null)
+      }
+    }
+    loadInterlinear()
+    return () => { cancelled = true }
+  }, [currentBook])
+
+  // 단어 클릭 핸들러 — Strong's 사전을 필요할 때만 로드
+  const handleWordClick = useCallback(async (strong, wordText) => {
+    // 먼저 로딩 상태로 팝업 열기
+    setWordPopup({ strong, entry: null, wordText })
+
+    const isHebrew = strong.startsWith('H')
+    try {
+      if (isHebrew) {
+        if (!strongsHebrew) {
+          const mod = await import('./data/strongs/hebrew.json')
+          setStrongsHebrew(mod.default)
+          setWordPopup({ strong, entry: mod.default[strong] || null, wordText })
+        } else {
+          setWordPopup({ strong, entry: strongsHebrew[strong] || null, wordText })
+        }
+      } else {
+        if (!strongsGreek) {
+          const mod = await import('./data/strongs/greek.json')
+          setStrongsGreek(mod.default)
+          setWordPopup({ strong, entry: mod.default[strong] || null, wordText })
+        } else {
+          setWordPopup({ strong, entry: strongsGreek[strong] || null, wordText })
+        }
+      }
+    } catch (e) {
+      console.error('Strong\'s 사전 로드 실패:', e)
+      setWordPopup({ strong, entry: null, wordText })
+    }
+  }, [strongsHebrew, strongsGreek])
 
   const book = useMemo(() => getBook(currentBook), [currentBook])
 
@@ -214,6 +273,8 @@ function App() {
             onStartPresentation={startPresentation}
             selectedVerse={selectedVerse}
             onSelectVerse={setSelectedVerse}
+            interlinear={interlinearData}
+            onWordClick={handleWordClick}
           />
         )}
         {view === 'books' && (
@@ -241,6 +302,15 @@ function App() {
           />
         )}
       </main>
+
+      {wordPopup && (
+        <WordPopup
+          strong={wordPopup.strong}
+          entry={wordPopup.entry}
+          wordText={wordPopup.wordText}
+          onClose={() => setWordPopup(null)}
+        />
+      )}
 
       {view === 'read' && (
         <nav className="bottom-nav">

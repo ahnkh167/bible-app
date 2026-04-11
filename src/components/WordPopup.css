@@ -1,0 +1,183 @@
+.wordpop-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: wordpopFadeIn 0.2s ease;
+}
+
+@keyframes wordpopFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.wordpop-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 32px 28px 24px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: wordpopSlideUp 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@keyframes wordpopSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wordpop-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.1);
+  color: var(--text-secondary);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.wordpop-close:hover {
+  background: rgba(128, 128, 128, 0.2);
+  color: var(--text);
+}
+
+.wordpop-loading {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* 헤더 */
+.wordpop-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.wordpop-strong {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+.wordpop-lang {
+  font-size: 13px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+/* 선택된 단어 */
+.wordpop-selected {
+  background: var(--accent-bg);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+.wordpop-selected-text {
+  font-size: 20px;
+  color: var(--text);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* 원어 */
+.wordpop-original {
+  text-align: center;
+  padding: 20px 0 24px;
+  margin-bottom: 8px;
+}
+.wordpop-lemma {
+  font-size: 48px;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 8px;
+  font-weight: 500;
+  word-break: keep-all;
+}
+.wordpop-lemma.hebrew {
+  font-family: 'SBL Hebrew', 'Ezra SIL', 'Times New Roman', serif;
+  direction: rtl;
+}
+.wordpop-lemma.greek {
+  font-family: 'SBL Greek', 'Gentium', 'Times New Roman', serif;
+}
+.wordpop-translit {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: 0.3px;
+}
+.wordpop-pron {
+  opacity: 0.7;
+}
+
+/* 정의 섹션 */
+.wordpop-def {
+  margin-bottom: 18px;
+}
+.wordpop-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.wordpop-def-text {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text);
+  word-break: keep-all;
+}
+.wordpop-def-text.en {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+.wordpop-def-text.kjv {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* 푸터 */
+.wordpop-footer {
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+
+/* 반응형 */
+@media (max-width: 560px) {
+  .wordpop-card {
+    padding: 28px 20px 20px;
+    border-radius: 16px;
+  }
+  .wordpop-strong { font-size: 20px; }
+  .wordpop-lemma { font-size: 38px; }
+  .wordpop-def-text { font-size: 15px; }
+}

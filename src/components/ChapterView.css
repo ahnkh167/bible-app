@@ -100,6 +100,33 @@
   opacity: 0.75;
 }
 
+/* 클릭 가능한 단어 (원어 팝업) */
+.word-clickable {
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s, background 0.15s;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+.word-clickable:hover {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+.word-clickable::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.word-clickable:hover::after {
+  opacity: 0.5;
+}
+
 /* 선택된 구절 */
 .verse.verse-selected {
   background: rgba(212, 165, 116, 0.12);
