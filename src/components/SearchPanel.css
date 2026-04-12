@@ -318,3 +318,272 @@
   border-color: var(--accent);
   transform: translateY(-1px);
 }
+
+/* ─── 탭 바 ─── */
+.search-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  background: var(--accent-bg);
+  border-radius: 12px;
+  padding: 4px;
+}
+.search-tab {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border-radius: 9px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.search-tab.active {
+  background: var(--bg-card);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.search-tab:not(.active):hover {
+  color: var(--text);
+}
+
+/* ─── 원어 사전 도움말 ─── */
+.ws-help-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* ─── 원어 검색 결과 카드 ─── */
+.ws-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ws-card {
+  position: relative;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.ws-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+.ws-card-selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* 선택 버튼 */
+.ws-card-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  cursor: pointer;
+  z-index: 2;
+}
+.ws-card-check:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ws-card-check.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* 카드 헤더 */
+.ws-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ws-card-strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+.ws-card-lang {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.ws-card-lang.heb {
+  background: rgba(76, 129, 175, 0.15);
+  color: #5a9fd4;
+}
+.ws-card-lang.grk {
+  background: rgba(139, 94, 60, 0.15);
+  color: var(--accent-light);
+}
+
+/* 원어 */
+.ws-card-lemma {
+  font-size: 32px;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.ws-card-lemma.hebrew {
+  font-family: 'SBL Hebrew', 'Ezra SIL', 'Times New Roman', serif;
+  direction: rtl;
+  text-align: right;
+}
+.ws-card-lemma.greek {
+  font-family: 'SBL Greek', 'Gentium', 'Times New Roman', serif;
+}
+.ws-card-translit {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+/* 정의 */
+.ws-card-def {
+  margin-bottom: 8px;
+}
+.ws-card-def-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-right: 8px;
+}
+.ws-card-def-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  word-break: keep-all;
+}
+.ws-card-def-text.en {
+  color: var(--text-secondary);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+.ws-card-kjv {
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* ─── 비교 바 ─── */
+.ws-compare-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  animation: fadeIn 0.2s ease;
+}
+.ws-compare-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ws-compare-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.ws-compare-items {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ws-compare-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.ws-compare-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: var(--accent);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.ws-compare-btn:hover {
+  opacity: 0.9;
+}
+.ws-compare-btn.active {
+  background: #c4905a;
+}
+.ws-compare-clear {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: transparent;
+  border-radius: 6px;
+}
+.ws-compare-clear:hover {
+  background: rgba(128, 128, 128, 0.1);
+}
+
+/* ─── 비교 그리드 ─── */
+.ws-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease;
+}
+.ws-card-compare {
+  border-width: 2px;
+}
+.ws-card-compare .ws-card-lemma {
+  font-size: 28px;
+}
+
+/* 반응형 */
+@media (max-width: 560px) {
+  .ws-compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .ws-compare-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .ws-compare-actions {
+    justify-content: flex-end;
+  }
+  .ws-card-lemma {
+    font-size: 26px;
+  }
+}

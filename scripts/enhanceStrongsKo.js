@@ -126,7 +126,7 @@ const EN2KO = {
   'altar': '제단', 'sacrifice': '제사', 'offering': '제물',
   'priesthood': '제사장직', 'service': '직무', 'ministry': '사역',
   'prayer': '기도', 'praise': '찬양', 'thanksgiving': '감사', 'song': '노래',
-  'psalm': '시', 'hymn': '찬송', 'worship': '경배',
+  'psalm': '시', 'hymn': '찬송', 'worship': '예배',
   'blessing': '축복', 'curse': '저주', 'reward': '상', 'gift': '선물',
   // 영적 존재
   'angel': '천사', 'archangel': '천사장', 'cherub': '그룹', 'seraph': '스랍',
@@ -188,7 +188,7 @@ const EN2KO = {
   'build': '세우다', 'make': '만들다', 'create': '창조하다', 'form': '빚다',
   'do': '행하다', 'work': '일하다', 'labor': '수고하다',
   'rest': '쉬다', 'stop': '그치다',
-  'pray': '기도하다', 'worship': '경배하다', 'serve': '섬기다', 'minister': '섬기다',
+  'pray': '기도하다', 'worship': '예배하다', 'serve': '섬기다', 'minister': '섬기다',
   'rule': '다스리다', 'reign': '통치하다', 'govern': '다스리다',
   'judge': '심판하다', 'condemn': '정죄하다', 'justify': '의롭다 하다',
   'forgive': '용서하다', 'pardon': '사면하다',

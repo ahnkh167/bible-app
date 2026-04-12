@@ -314,6 +314,7 @@ function App() {
               setPresentationVerse(verse || 1)
               setPresentationMode(true)
             }}
+            onWordClick={handleWordClick}
           />
         )}
       </main>
