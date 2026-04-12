@@ -207,6 +207,41 @@
   background: var(--accent-bg);
 }
 
+/* 구절 빠른 이동 칩 */
+.cv-verse-jump-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 0 12px;
+  position: sticky;
+  top: 56px;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.cv-verse-jump-chip {
+  padding: 5px 12px;
+  border-radius: 16px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.cv-verse-jump-chip:hover {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(139, 94, 60, 0.25);
+}
+.cv-verse-jump-chip:active {
+  transform: scale(0.96);
+}
+
 /* Chapter End */
 .chapter-end {
   text-align: center;

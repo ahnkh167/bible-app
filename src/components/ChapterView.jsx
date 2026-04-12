@@ -29,6 +29,7 @@ async function copyToClipboard(text) {
 
 function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fontSize, onNavigate, onBookmarkToggle, isBookmarked, onStartPresentation, selectedVerse, onSelectVerse, interlinear, onWordClick }) {
   const contentRef = useRef(null)
+  const jumpBarRef = useRef(null)
   const [localSelected, setLocalSelected] = useState(null)
   const [copiedNum, setCopiedNum] = useState(null)
 
@@ -111,12 +112,42 @@ function ChapterView({ bookId, book, chapter, verses, versesEn, showEnglish, fon
         <span className="chapter-number">{chapter}장</span>
       </div>
 
+      {/* 구절 빠른 이동 칩 */}
+      {verseEntries.length > 10 && (() => {
+        const total = Number(verseEntries[verseEntries.length - 1]?.[0]) || 0
+        const ranges = []
+        for (let start = 1; start <= total; start += 10) {
+          const end = Math.min(start + 9, total)
+          ranges.push({ start, end, label: `${start}-${end}` })
+        }
+        return (
+          <div className="cv-verse-jump-bar" ref={jumpBarRef}>
+            {ranges.map(r => (
+              <button
+                key={r.start}
+                className="cv-verse-jump-chip"
+                onClick={() => {
+                  const el = document.getElementById(`cv-verse-${r.start}`)
+                  if (!el) return
+                  const barH = jumpBarRef.current?.offsetHeight || 100
+                  const y = el.getBoundingClientRect().top + window.pageYOffset - 56 - barH - 16
+                  window.scrollTo({ top: y, behavior: 'smooth' })
+                }}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        )
+      })()}
+
       <div className={`verses ${showEnglish ? 'bilingual' : ''}`} style={{ fontSize: `${fontSize}px` }}>
         {verseEntries.map(([num, text]) => {
           const interVerse = interlinear?.[String(chapter)]?.[String(num)]
           return (
           <div
             key={num}
+            id={`cv-verse-${num}`}
             className={`verse ${isBookmarked(bookId, chapter, Number(num)) ? 'bookmarked' : ''} ${localSelected === Number(num) ? 'verse-selected' : ''}`}
             onClick={() => handleVerseClick(num)}
             onDoubleClick={() => handleVerseDoubleClick(num)}
