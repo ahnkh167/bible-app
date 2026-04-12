@@ -580,9 +580,44 @@ function SearchPanel({ bibleData, bibleDataEn, onNavigate, onPresent, onWordClic
                   )}
                 </div>
               </div>
+
+              {/* 구절 빠른 이동 칩 */}
+              {verseResults.verses.length > 10 && (
+                <div className="verse-jump-bar">
+                  {(() => {
+                    const total = verseResults.verses[verseResults.verses.length - 1]?.verse || 0
+                    const ranges = []
+                    for (let start = 1; start <= total; start += 10) {
+                      const end = Math.min(start + 9, total)
+                      ranges.push({ start, end, label: `${start}-${end}` })
+                    }
+                    return ranges.map(r => (
+                      <button
+                        key={r.start}
+                        className="verse-jump-chip"
+                        onClick={() => {
+                          const el = document.getElementById(`vref-${r.start}`)
+                          if (!el) return
+                          // 점프바 높이 감안하여 위치 보정
+                          const y = el.getBoundingClientRect().top + window.pageYOffset - 130
+                          window.scrollTo({ top: y, behavior: 'smooth' })
+                        }}
+                      >
+                        {r.label}
+                      </button>
+                    ))
+                  })()}
+                </div>
+              )}
+
               <div className="verse-ref-list">
                 {verseResults.verses.map(v => (
-                  <button key={v.verse} className="verse-ref-item" onClick={() => onPresent?.(verseResults.book.id, verseResults.chapter, v.verse)}>
+                  <button
+                    key={v.verse}
+                    id={`vref-${v.verse}`}
+                    className="verse-ref-item"
+                    onClick={() => onPresent?.(verseResults.book.id, verseResults.chapter, v.verse)}
+                  >
                     <span className="verse-ref-num">{v.verse}</span>
                     <div className="verse-ref-content">
                       <div className="verse-ref-ko">{v.textKo}</div>

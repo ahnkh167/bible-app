@@ -190,6 +190,36 @@
   background: #c4905a;
 }
 
+/* 구절 빠른 이동 */
+.verse-jump-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.verse-jump-chip {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid transparent;
+  border-radius: 16px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.verse-jump-chip:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
 .verse-ref-list {
   display: flex;
   flex-direction: column;
